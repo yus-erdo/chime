@@ -15,5 +15,9 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^8.2.3"
+  },
+  "dependencies": {
+    "gkm": "^0.2.0",
+    "moment": "^2.25.3"
   }
 }

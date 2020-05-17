@@ -27,13 +27,11 @@ const createWindow = () => {
   window.loadFile("index.html");
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  //window.webContents.openDevTools();
 
   // Hide the window when it loses focus
   window.on("blur", () => {
-    if (!window.webContents.isDevToolsOpened()) {
-      window.hide();
-    }
+    window.hide();
   });
 }
 
