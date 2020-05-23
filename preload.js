@@ -1,11 +1,13 @@
-const moment = require("moment");
 const gkm = require("gkm");
 
-const interval = 1000;
-const maxActiveTime = 55;
-const minBreakTime = 3;
+const ms = 1000;
+const interval = 1;
+const intervalMs = 1 * ms;
+const maxActiveTime = 55 * (60/interval) * ms;
+const minBreakTime = 3 * (60/interval) * ms;
 
 let activity = true;
+let time = 0;
 let active = 0;
 let notActive = 0;
 
@@ -26,13 +28,27 @@ gkm.events.on("mouse.*", function (data) {
   activity = true;
 });
 
+function inMinutes(counter) {
+  return Math.round(counter / 60);
+}
+
+function updateView() {
+  document.querySelector('#time').textContent = `${time}s`;
+  document.querySelector('#active-use-time').textContent = `${inMinutes(active)}m`;
+  document.querySelector('#tick-active').textContent = `${active}t`;
+  document.querySelector('#tick-notActive').textContent = `${notActive}t`;
+}
+
 function every() {
   console.log({ active, notActive });
   if (activity) {
+    if (notActive > 0) {
+      active += notActive;
+    }
     active++;
     notActive = 0;
 
-    if (active === maxActiveTime) {
+    if (inMinutes(active) === maxActiveTime) {
       showNotification(
         "☕️ Time to take a break",
         "It's been 55m without a break."
@@ -41,16 +57,23 @@ function every() {
   } else {
     notActive++;
     
-    if (notActive === minBreakTime) {
-      showNotification(
-        "Feel free to get back",
-        "...."
-      );
+    if (inMinutes(notActive) === minBreakTime) {
       active = 0;
+      showNotification(
+        "It was break",
+        "Breakkkkkk."
+      );
     }
   }
-  activity = false;
-  setTimeout(every, interval);
+  
+  // reset every 30 sec
+  if (time % 30 === 0) {
+    activity = false;  
+  }
+
+  time++;
+  updateView();
+  setTimeout(every, intervalMs);
 }
 
 // All of the Node.js APIs are available in the preload process.
