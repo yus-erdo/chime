@@ -1,15 +1,14 @@
-const gkm = require("gkm");
+const idle = require("@paulcbetts/system-idle-time");
+const moment = require("moment");
 
-const ms = 1000;
-const interval = 1;
-const intervalMs = 1 * ms;
-const maxActiveTime = 55 * (60/interval) * ms;
-const minBreakTime = 3 * (60/interval) * ms;
+const intervalMs = 1000;
+const breakTime = 5 * 60 * intervalMs;
 
-let activity = true;
-let time = 0;
-let active = 0;
-let notActive = 0;
+let activityStartTime = moment();
+const breaks = [];
+
+let inBreak = false;
+let notified = false;
 
 const showNotification = (title, body) => {
   const notification = new Notification(title, { body });
@@ -18,60 +17,46 @@ const showNotification = (title, body) => {
   };
 };
 
-// Listen to all key events (pressed, released, typed)
-gkm.events.on("key.*", function (data) {
-  activity = true;
-});
-
-// Listen to all mouse events (click, pressed, released, moved, dragged)
-gkm.events.on("mouse.*", function (data) {
-  activity = true;
-});
-
 function inMinutes(counter) {
   return Math.round(counter / 60);
 }
 
 function updateView() {
-  document.querySelector('#time').textContent = `${time}s`;
-  document.querySelector('#active-use-time').textContent = `${inMinutes(active)}m`;
-  document.querySelector('#tick-active').textContent = `${active}t`;
-  document.querySelector('#tick-notActive').textContent = `${notActive}t`;
+
+  const diff = moment().diff(activityStartTime);
+  const duration = moment.duration(diff);
+  const msg = Math.floor(duration.asHours()) + moment.utc(diff).format(":mm:ss");
+
+  document.querySelector(
+    "#time"
+  ).textContent = `${idle.getIdleTime()}s - ${activityStartTime}`;
+  document.querySelector(
+    "#active-use-time"
+  ).textContent = `${msg}`;
+  document.querySelector("#breaks").textContent = breaks.join(", ");
 }
 
 function every() {
-  console.log({ active, notActive });
-  if (activity) {
-    if (notActive > 0) {
-      active += notActive;
-    }
-    active++;
-    notActive = 0;
+  if (moment().subtract(55, "minutes").isAfter(activityStartTime) && !inBreak && !notified) {
+    showNotification("Time for a break", "Take a break!");
+    notified = true;
+  }
 
-    if (inMinutes(active) === maxActiveTime) {
-      showNotification(
-        "☕️ Time to take a break",
-        "It's been 55m without a break."
-      );
+  const idleTime = idle.getIdleTime();
+  if (idleTime > breakTime) {
+    if (!inBreak) {
+      breaks.push(`Start break: ${moment().subtract(5, 'minute').format()}`);
     }
+    inBreak = true;
   } else {
-    notActive++;
-    
-    if (inMinutes(notActive) === minBreakTime) {
-      active = 0;
-      showNotification(
-        "It was break",
-        "Breakkkkkk."
-      );
+    if (inBreak) {
+      breaks.push(`End break: ${moment().format()}`);
+      activityStartTime = moment();
+      notified = false;
     }
-  }
-  
-  // reset every 30 sec
-  if (time % 30 === 0) {
-    activity = false;  
+    inBreak = false;
   }
 
-  time++;
   updateView();
   setTimeout(every, intervalMs);
 }
@@ -89,5 +74,5 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   console.log("setTimeout");
-  setTimeout(every, interval);
+  setTimeout(every, intervalMs);
 });
