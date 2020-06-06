@@ -12,7 +12,7 @@ const createWindow = () => {
   // Create the browser window.
   window = new BrowserWindow({
     width: 312,
-    height: 353,
+    height: 480,
     show: false,
     frame: false,
     fullscreenable: false,

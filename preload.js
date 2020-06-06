@@ -1,17 +1,25 @@
 const idle = require("@paulcbetts/system-idle-time");
-const moment = require("moment");
+const date = require("date-fns");
 
 const intervalMs = 1000;
-const breakTime = 5 * 60 * intervalMs;
+const breakTimeInMinutes = 5;
+const breakTime = breakTimeInMinutes * 60 * intervalMs;
 
-let activityStartTime = moment();
-const breaks = [];
+let activityStartTime = new Date();
+const activities = [];
+activities.push({
+  start: activityStartTime,
+  end: null,
+});
 
 let inBreak = false;
 let notified = false;
 
 const showNotification = (title, body) => {
-  const notification = new Notification(title, { body });
+  const notification = new Notification(title, {
+    body,
+    requireInteraction: true,
+  });
   notification.onclick = () => {
     console.log("notification click");
   };
@@ -22,22 +30,37 @@ function inMinutes(counter) {
 }
 
 function updateView() {
-
-  const diff = moment().diff(activityStartTime);
-  const duration = moment.duration(diff);
-  const msg = Math.floor(duration.asHours()) + moment.utc(diff).format(":mm:ss");
+  const msg = date.formatDistanceStrict(new Date(), activityStartTime);
 
   document.querySelector(
     "#time"
   ).textContent = `${idle.getIdleTime()}s - ${activityStartTime}`;
-  document.querySelector(
-    "#active-use-time"
-  ).textContent = `${msg}`;
-  document.querySelector("#breaks").textContent = breaks.join(", ");
+  document.querySelector("#active-use-time").textContent = `${msg}`;
+  document.querySelector("#activities").textContent = activities
+    .map((a) => `${a.start && a.start} - ${a.end && a.end}`)
+    .join(", ");
+}
+
+function onBreakStart() {
+  const lastActivity = activities.pop();
+  lastActivity.end = date.subMinutes(new Date(), breakTimeInMinutes);
+  activities.push(lastActivity);
+}
+
+function onBreakEnd() {
+  activityStartTime = new Date();
+  activities.push({
+    start: activityStartTime,
+    end: null,
+  });
 }
 
 function every() {
-  if (moment().subtract(55, "minutes").isAfter(activityStartTime) && !inBreak && !notified) {
+  if (
+    date.isAfter(date.subMinutes(new Date(), 55), activityStartTime) &&
+    !inBreak &&
+    !notified
+  ) {
     showNotification("Time for a break", "Take a break!");
     notified = true;
   }
@@ -45,19 +68,22 @@ function every() {
   const idleTime = idle.getIdleTime();
   if (idleTime > breakTime) {
     if (!inBreak) {
-      breaks.push(`Start break: ${moment().subtract(5, 'minute').format()}`);
+      onBreakStart();
     }
     inBreak = true;
   } else {
     if (inBreak) {
-      breaks.push(`End break: ${moment().format()}`);
-      activityStartTime = moment();
+      onBreakEnd();
       notified = false;
     }
     inBreak = false;
   }
 
   updateView();
+
+  //const ctx = document.getElementById("myChart");
+  // drawChart(ctx, activities);
+
   setTimeout(every, intervalMs);
 }
 
@@ -74,5 +100,6 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   console.log("setTimeout");
+
   setTimeout(every, intervalMs);
 });
