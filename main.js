@@ -11,8 +11,8 @@ app.dock.hide();
 const createWindow = () => {
   // Create the browser window.
   window = new BrowserWindow({
-    width: 312,
-    height: 480,
+    width: 230,
+    height: 130,
     show: false,
     frame: false,
     fullscreenable: false,

@@ -11,22 +11,28 @@
       http-equiv="X-Content-Security-Policy"
       content="default-src 'self'; script-src 'self'"
     />
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
-    <h1>Owl</h1>
-    <div>
+    <!-- <div>
       <b>time:</b>
       <span id="time">-</span>
+    </div> -->
+    <div>
+      <b>Percentage:</b>
+      <span id="percentage">100%</span>
     </div>
     <div>
       <b>Active use time:</b>
       <span id="active-use-time">-</span>
     </div>
-    <div>
-      <b>Activities:</b>
-      <span id="activities">-</span>
+
+    <div id="battery" class="battery">     
     </div>
-    <canvas id="myChart" width="200" height="200"></canvas>
+    <div id="tip" class="tip">     
+    </div>
+    <div id="filled" class="filled">
+    </div>
 
     <!-- You can also require other files to run in this process -->
     <script src="./renderer.js"></script>

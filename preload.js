@@ -3,6 +3,7 @@ const date = require("date-fns");
 
 const intervalMs = 1000;
 const breakTimeInMinutes = 5;
+const activeTimeInMinutes = 55;
 const breakTime = breakTimeInMinutes * 60 * intervalMs;
 
 let activityStartTime = new Date();
@@ -31,14 +32,25 @@ function inMinutes(counter) {
 
 function updateView() {
   const msg = date.formatDistanceStrict(new Date(), activityStartTime);
+  const percentage = Math.round(
+    100 - 100 * (activeSoFarInMinutes() / activeTimeInMinutes)
+  );
+  const width = Math.round(
+    (200 * (activeTimeInMinutes - activeSoFarInMinutes())) / activeTimeInMinutes
+  );
 
-  document.querySelector(
-    "#time"
-  ).textContent = `${idle.getIdleTime()}s - ${activityStartTime}`;
+  // document.querySelector(
+  //   "#time"
+  // ).textContent = `${idle.getIdleTime()}s - ${activityStartTime}`;
+  document.querySelector("#percentage").textContent = `${percentage}%`;
   document.querySelector("#active-use-time").textContent = `${msg}`;
-  document.querySelector("#activities").textContent = activities
-    .map((a) => `${a.start && a.start} - ${a.end && a.end}`)
-    .join(", ");
+  document.querySelector("#filled").style.width = `${width}px`;
+  if (width < 40) {
+    document.querySelector("#filled").style.background = "yellow";
+  }
+  if (width < 20) {
+    document.querySelector("#filled").style.background = "red";
+  }
 }
 
 function onBreakStart() {
@@ -55,9 +67,16 @@ function onBreakEnd() {
   });
 }
 
+function activeSoFarInMinutes() {
+  return date.differenceInMinutes(new Date(), activityStartTime);
+}
+
 function every() {
   if (
-    date.isAfter(date.subMinutes(new Date(), 55), activityStartTime) &&
+    date.isAfter(
+      date.subMinutes(new Date(), activeTimeInMinutes),
+      activityStartTime
+    ) &&
     !inBreak &&
     !notified
   ) {
