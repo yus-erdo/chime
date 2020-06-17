@@ -1,5 +1,6 @@
 const idle = require("@paulcbetts/system-idle-time");
 const date = require("date-fns");
+const ipc = require("electron").ipcRenderer;
 
 const intervalMs = 1000;
 const breakTimeInMinutes = 5;
@@ -32,9 +33,9 @@ function inMinutes(counter) {
 
 function updateView() {
   const msg = date.formatDistanceStrict(new Date(), activityStartTime);
-  const percentage = Math.round(
-    100 - 100 * (activeSoFarInMinutes() / activeTimeInMinutes)
-  );
+  const percentageCalc =
+    100 - 100 * (activeSoFarInMinutes() / activeTimeInMinutes);
+  const percentage = Math.round(percentageCalc < 0 ? 0 : percentageCalc);
   const width = Math.round(
     (200 * (activeTimeInMinutes - activeSoFarInMinutes())) / activeTimeInMinutes
   );
@@ -45,12 +46,15 @@ function updateView() {
   document.querySelector("#percentage").textContent = `${percentage}%`;
   document.querySelector("#active-use-time").textContent = `${msg}`;
   document.querySelector("#filled").style.width = `${width}px`;
-  if (width < 40) {
-    document.querySelector("#filled").style.background = "yellow";
+
+  let fillColor = "#5ef075";
+  if (width < 40 && width >= 20) {
+    fillColor = "yellow";
+  } else if (width < 20) {
+    fillColor = "red";
   }
-  if (width < 20) {
-    document.querySelector("#filled").style.background = "red";
-  }
+  document.querySelector("#filled").style.background = fillColor;
+  ipc.send("update-icon", percentage);
 }
 
 function onBreakStart() {

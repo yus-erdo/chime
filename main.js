@@ -2,6 +2,7 @@
 const { app, BrowserWindow, Tray } = require("electron");
 const path = require("path");
 const assetsDirectory = path.join(__dirname, "assets");
+const ipc = require("electron").ipcMain;
 
 let window;
 
@@ -33,10 +34,10 @@ const createWindow = () => {
   window.on("blur", () => {
     window.hide();
   });
-}
+};
 
 const createTray = () => {
-  tray = new Tray(path.join(assetsDirectory, "owl-icon.png"));
+  tray = new Tray(path.join(assetsDirectory, "icon-17.png"));
   tray.on("right-click", toggleWindow);
   tray.on("double-click", toggleWindow);
   tray.on("click", function (event) {
@@ -100,4 +101,7 @@ app.on("activate", function () {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
-
+ipc.on("update-icon", function (event, arg) {
+  const iconNum = Math.round(17 / 100 * arg);
+  tray.setImage(path.join(assetsDirectory, `icon-${iconNum}.png`));
+});
