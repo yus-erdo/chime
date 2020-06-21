@@ -106,7 +106,13 @@ function every() {
     !inBreak &&
     !notified
   ) {
-    showNotification("Time for a break", "Take a break!");
+    showNotification(
+      "Time for a break",
+      `It's been ${date.subMinutes(
+        new Date(),
+        settings.activeTimeInMinutes
+      )}! and you haven't taken a break.`
+    );
     notified = true;
   }
 
