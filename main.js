@@ -1,8 +1,14 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Tray } = require("electron");
+const { app, BrowserWindow, Tray, ipcMain } = require("electron");
 const path = require("path");
 const assetsDirectory = path.join(__dirname, "assets");
-const ipc = require("electron").ipcMain;
+
+// launch at login
+app.setLoginItemSettings({
+  openAtLogin: true,
+});
+
+app.allowRendererProcessReuse = false
 
 let window;
 
@@ -13,7 +19,7 @@ const createWindow = () => {
   // Create the browser window.
   window = new BrowserWindow({
     width: 230,
-    height: 130,
+    height: 230,
     show: false,
     frame: false,
     fullscreenable: false,
@@ -101,7 +107,13 @@ app.on("activate", function () {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
-ipc.on("update-icon", function (event, arg) {
+ipcMain.on("update-icon", function (event, arg) {
   const iconNum = Math.round(17 / 100 * arg);
   tray.setImage(path.join(assetsDirectory, `icon-${iconNum}.png`));
+});
+
+ipcMain.on("launch-at-login", function (event, arg) {
+  app.setLoginItemSettings({
+    openAtLogin: arg,
+  });
 });

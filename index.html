@@ -11,7 +11,7 @@
       http-equiv="X-Content-Security-Policy"
       content="default-src 'self'; script-src 'self'"
     />
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
     <!-- <div>
@@ -27,11 +27,34 @@
       <span id="active-use-time">-</span>
     </div>
 
-    <div id="battery" class="battery">     
-    </div>
-    <div id="tip" class="tip">     
-    </div>
-    <div id="filled" class="filled">
+    <div id="battery" class="battery"></div>
+    <div id="tip" class="tip"></div>
+    <div id="filled" class="filled"></div>
+    <div class="settings">
+      <div>
+        <span>Settings:</span>
+      </div>
+      <div>
+        <div class="settingLine">
+          <span>Active duration:</span>
+          <input id="active-duration-minus" type="button" value="-" />
+          <span id="active-duration-val">55</span><span>mins</span>
+          <input id="active-duration-plus" type="button" value="+" />
+        </div>
+        <div class="settingLine">
+          <span>Break duration:</span>
+          <input id="break-duration-minus" type="button" value="-" />
+          <span id="break-duration-val">3</span><span>mins</span>
+          <input id="break-duration-plus" type="button" value="+" />
+        </div>
+        <div class="settingLine">
+          <span>Launch at login:</span>
+          <label class="switch">
+            <input id="launch-at-login" type="checkbox" checked="checked" />
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
     </div>
 
     <!-- You can also require other files to run in this process -->
