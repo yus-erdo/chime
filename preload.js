@@ -108,10 +108,12 @@ function every() {
   ) {
     showNotification(
       "Time for a break",
-      `It's been ${date.subMinutes(
+      `It's been ${date.differenceInMinutes(
         new Date(),
         settings.activeTimeInMinutes
-      )}! and you haven't taken a break.`
+      )} minutes and you haven't taken a break. Take ${
+        settings.breakTimeInMinutes
+      } minutes to reset your mind and body.`
     );
     notified = true;
   }
