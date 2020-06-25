@@ -110,7 +110,7 @@ function every() {
       "Time for a break",
       `It's been ${date.differenceInMinutes(
         new Date(),
-        settings.activeTimeInMinutes
+        activityStartTime
       )} minutes and you haven't taken a break. Take ${
         settings.breakTimeInMinutes
       } minutes to reset your mind and body.`
@@ -151,6 +151,11 @@ window.addEventListener("DOMContentLoaded", () => {
   for (const type of ["chrome", "node", "electron"]) {
     replaceText(`${type}-version`, process.versions[type]);
   }
+
+  showNotification(
+    "Started!",
+    `You will receive notification like this one when it's time to take a break`
+  );
 
   document.querySelector("#launch-at-login").onclick = () => {
     ipc.send(
