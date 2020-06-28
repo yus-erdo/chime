@@ -1,11 +1,11 @@
 {
-  "name": "owl",
+  "name": "chome",
   "version": "0.0.1",
   "description": "Get notifications to take a break",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "pack-macos": "electron-packager . human-battery --platform=darwin --arch=x64 --overwrite --icon=assets/mac-icon.icns",
+    "pack-macos": "electron-packager . chime --platform=darwin --arch=x64 --overwrite --icon=assets/mac-icon.icns",
     "test": "jest"
   },
   "repository": "https://github.com/electron/electron-quick-start",
