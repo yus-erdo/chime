@@ -7,6 +7,9 @@ I used to use an app called Bowl which would give bell like sound when I have be
 # how does it work
 This app monitors active system state and gives you notifications when you have been active too long. It monitors the active system time by using a native extension to node, which simply detects keyboard and mouse activity. So as long as you are using your keyboard and mouse it thinks you are active. If you are not using your keyboard and mouse long enough (therefore most like you are away) it takes this as a break. When you set your break time to 5 mins or so; inactivity of around 5 mins very most like you are away. As per my personal experience I definitely end up using my keyboard or mouse in 5 mins.
 
+# download
+https://github.com/erdogany/chime/releases/download/v0.1/chime.zip
+
 # build
 You can just download the already packaged macOS app from releases. This is the easiest option. You then obviously need to give permission to be run and allow notifications. The pre-built app is not signed. 
 
