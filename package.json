@@ -16,7 +16,7 @@
   "author": "erdogany",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^9.0.4",
+    "electron": "^9.3.0",
     "electron-packager": "^14.2.1",
     "electron-rebuild": "^1.11.0"
   },
