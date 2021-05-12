@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@paulcbetts/system-idle-time": "file:../node-system-idle-time-master",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "date-fns": "^2.14.0",
     "electron-settings": "^4.0.1",
     "jest": "^26.0.1",
