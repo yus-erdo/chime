@@ -48,4 +48,4 @@ npm run pack-macos
 App Icon By:
 https://www.flaticon.com/authors/freepik
 
-test-release-4
+test-release-5
